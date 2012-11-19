@@ -74,8 +74,14 @@ function showControls(filename,writeperms){
     var editorbarhtml = '<div id="editorcontrols" style="display: none;"><div class="crumb svg last" id="breadcrumb_file" style="background-image:url(&quot;'+OC.imagePath('core','breadcrumb.png')+'&quot;)"><p>'+filename+'</p></div>';
     if(writeperms=="true"){
         editorbarhtml += '<button id="editor_save">'+t('files_latexeditor','Save')+'</button><div class="separator"></div>';
-        if(isLatex(filename))
-            editorbarhtml += '<button id="editor_compile">'+t('files_latexeditor','Compile')+'</button><div class="separator"></div>';
+        if(isLatex(filename)){
+            editorbarhtml += '<button id="editor_compile">'+t('files_latexeditor','Compile')+'</button>';
+	    editorbarhtml += '<select id="editor_loadtemplate" style="width: 10em">';
+	    editorbarhtml +='<option>Select Template</option>';
+	    editorbarhtml +='<option val="Beamer">Beamer</option>';
+	    editorbarhtml +='<option val="Article">Article</option>';
+	    editorbarhtml +='</select><div class="separator"></div>';
+	}
     }
     editorbarhtml += '<label for="editorseachval">Search:</label><input type="text" name="editorsearchval" id="editorsearchval"><div class="separator"></div><button id="editor_close">'+t('files_latexeditor','Close')+'</button></div>';
 	
@@ -90,6 +96,8 @@ function bindControlEvents(){
     $('#editor_close').die('click',hideFileEditor).live('click',hideFileEditor);    
     
     $('#editor_compile').die('click',doCompile).live('click',doCompile);
+    $('#editor_loadtemplate').die('change',doLoadTemplate).live('change',doLoadTemplate);
+
     $('#editorsearchval').die('keyup', doSearch).live('keyup', doSearch);
     $('#clearsearchbtn').die('click', resetSearch).live('click', resetSearch);
     $('#nextsearchbtn').die('click', nextSearchResult).live('click', nextSearchResult);
@@ -263,7 +271,19 @@ function compileFile(filename,path){
 //reopenEditor();
 }
 
-
+//Tries to Load Latex template in to file
+function doLoadTemplate(){
+    
+    if(editorIsShown()){
+        var templatename = $('#editor_loadtemplate').val();
+        if(templatename!='Select Template'){
+	    $.post(OC.filePath('files_latexeditor','ajax','loadtemplate.php'),{"name":templatename},function(){
+	    
+	    });
+	}
+        
+    }
+}
 //Tries to compile The file
 function doCompile(){
     if(editorIsShown()){
