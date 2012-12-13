@@ -480,11 +480,11 @@ $(window).resize(function() {
 var is_editor_shown = false;
 $(document).ready(function(){
     if(typeof FileActions!=='undefined'){
-        FileActions.register('text','Edit','',function(filename){
+        FileActions.register('text','Edit',OC.PERMISSION_READ,function(filename){
             showFileEditor($('#dir').val(),filename);
         });
         FileActions.setDefault('text','Edit');
-        FileActions.register('application/xml','Edit','',function(filename){
+        FileActions.register('application/xml','Edit',OC.PERMISSION_READ,function(filename){
             showFileEditor($('#dir').val(),filename);
         });
         FileActions.setDefault('application/xml','Edit');

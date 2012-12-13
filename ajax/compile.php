@@ -70,7 +70,7 @@ $output.="\n>>>> "."COPY DONE: \n";
 
 //OC_Files::newFile($dir, $pdffile, 'file');
 $target = OCP\Files::buildNotExistingFileName(stripslashes($dir), $pdffile);
-$meta=OC_FileCache::getCached($target);
+$meta=OC_FileCache_Cached::get($target);
 
 
 //OCP\JSON::success(array('data' => array('output' => nl2br($output), 'mime'=>$meta['mimetype'],'size'=>$meta['size'],'pdffile' => $pdffile, 'logfile' => $logfile)));
