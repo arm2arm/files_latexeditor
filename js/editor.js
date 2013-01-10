@@ -200,67 +200,67 @@ function showFileEditor(dir,filename){
         // Loads the file editor and display it.
         $('#content').append('<div id="editor"></div>');
         var data = $.getJSON(
-            OC.filePath('files_latexeditor','ajax','loadfile.php'),
-            {
-                file:filename,
-                dir:dir
-            },
-            function(result){
-                if(result.status == 'success'){
-                    // Save mtime
-                    $('#editor').attr('data-mtime', result.data.mtime);
-                    // Initialise the editor
-                    $('.actions,#file_action_panel').fadeOut('slow');
-                    $('#content table').fadeOut('slow', function() {
-                        // Show the control bar
-                        showControls(filename,result.data.write);
-                        // Update document title
-                        $('body').attr('old_title', document.title);
-                        document.title = filename+' - ownCloud';
-                        $('#editor').text(result.data.filecontents);
-                        $('#editor').attr('data-dir', dir);
-                        $('#editor').attr('data-filename', filename);
-                        $('#editor').attr('data-edited', 'false');
-                        window.aceEditor = ace.edit("editor");
-                        aceEditor.setShowPrintMargin(false);
-                        aceEditor.getSession().setUseWrapMode(true);
-                        if(result.data.write=='false'){
-                            aceEditor.setReadOnly(true);
-                        }
-                        setEditorSize();
-                        setSyntaxMode(getFileExtension(filename));
+        OC.filePath('files_latexeditor','ajax','loadfile.php'),
+        {
+            file:filename,
+            dir:dir
+        },
+        function(result){
+            if(result.status == 'success'){
+                // Save mtime
+                $('#editor').attr('data-mtime', result.data.mtime);
+                // Initialise the editor
+                $('.actions,#file_action_panel').fadeOut('slow');
+                $('#content table').fadeOut('slow', function() {
+                    // Show the control bar
+                    showControls(filename,result.data.write);
+                    // Update document title
+                    $('body').attr('old_title', document.title);
+                    document.title = filename+' - ownCloud';
+                    $('#editor').text(result.data.filecontents);
+                    $('#editor').attr('data-dir', dir);
+                    $('#editor').attr('data-filename', filename);
+                    $('#editor').attr('data-edited', 'false');
+                    window.aceEditor = ace.edit("editor");
+                    aceEditor.setShowPrintMargin(false);
+                    aceEditor.getSession().setUseWrapMode(true);
+                    if(result.data.write=='false'){
+                        aceEditor.setReadOnly(true);
+                    }
+                    setEditorSize();
+                    setSyntaxMode(getFileExtension(filename));
                         
-                        OC.addScript('files_latexeditor','aceeditor/theme-chrome', function(){
-                            window.aceEditor.setTheme("ace/theme/chrome");
-                        });
-                        window.aceEditor.getSession().on('change', function(){
-                            if($('#editor').attr('data-edited')!='true'){
-                                $('#editor').attr('data-edited', 'true');
-                                $('#breadcrumb_file').text($('#breadcrumb_file').text()+' *');
-                                document.title = $('#editor').attr('data-filename')+' * - ownCloud';
-                            }
-                        });
-                        // Add the ctrl+s event
-                        window.aceEditor.commands.addCommand({
-                            name: "save",
-                            bindKey: {
-                                win: "Ctrl-S",
-                                mac: "Command-S",
-                                sender: "editor"
-                            },
-                            exec: function(){
-                                doFileSave();	
-                            }
-                        });
+                    OC.addScript('files_latexeditor','aceeditor/theme-chrome', function(){
+                        window.aceEditor.setTheme("ace/theme/chrome");
                     });
-                } else {
-                    // Failed to get the file.
-                    OC.dialogs.alert(result.data.message, t('files_latexeditor','An error occurred!'));
-                }
-            // End success
+                    window.aceEditor.getSession().on('change', function(){
+                        if($('#editor').attr('data-edited')!='true'){
+                            $('#editor').attr('data-edited', 'true');
+                            $('#breadcrumb_file').text($('#breadcrumb_file').text()+' *');
+                            document.title = $('#editor').attr('data-filename')+' * - ownCloud';
+                        }
+                    });
+                    // Add the ctrl+s event
+                    window.aceEditor.commands.addCommand({
+                        name: "save",
+                        bindKey: {
+                            win: "Ctrl-S",
+                            mac: "Command-S",
+                            sender: "editor"
+                        },
+                        exec: function(){
+                            doFileSave();	
+                        }
+                    });
+                });
+            } else {
+                // Failed to get the file.
+                OC.dialogs.alert(result.data.message, t('files_latexeditor','An error occurred!'));
             }
-            // End ajax
-            );
+            // End success
+        }
+        // End ajax
+    );
         is_editor_shown = true;
     }
 }
@@ -312,27 +312,28 @@ function reopenEditor(){
         $('#editor').fadeIn('fast');
         $('#editorcontrols').fadeIn('fast', function(){
 
-            });
+        });
     });
     is_editor_shown  = true;
 }
 /*===============ARmans hack*/
-function AjaxCompile(ajaxpath, path,filename){
+function AjaxCompile(ajaxpath, path,filename,pdflatex){
     var jqxhr = $.ajax({
         type: 'POST',       
         url: ajaxpath,
         data: {
             path:path,  
-            filename:filename
+            filename:filename,
+            pdflatex:pdflatex?1:0
         },
         dataType: 'json',    
         global: false,
         async:false,
+        beforeSend: function (  ) {
+          doFileSave();  
+        },
         success: function(jsondata) {
-            if(jsondata.status!='success'){
-                // Compile failed
-                //$('#latexresult').append('<b>Save</b>');
-                //$('#latexresult').after('<p  style="float: left">Failed to save file</p>');
+            if(jsondata.status!='success'){                
                 $(":button:contains('ViewPdf')").button('disable');
                 
             } else {
@@ -368,15 +369,18 @@ function compileFile(filename,path){
     DestroIfExist("dialogcompile");
     var compileDlg=$('<div id="dialogcompile"  title="'+'Compiling:'+ path+filename +'"><div id="latexresult" class="" style="width:98%;height:98%;"> </div></div>').dialog({
         modal: false,
-        open: function() {  },
+        open: function(e, ui) { 
+            $(e.target).parent().find('span').filter(function(){
+                return $(this).text() === 'dummy';
+            }).parent().replaceWith('<input id="pdflatex" value="pdflatex" name="pdflatex" type=\'checkbox\'>use pdflatex </input>');
+        },
         buttons: {
-            Close: function() {
-                $( this ).dialog( "close" );
-            },
+            'dummy': function(e){          
+            },           
             Compile: function(){
-                // $("#result").load(ajaxpath);
-                json=AjaxCompile(ajaxpath,path, filename);
                 
+                $('#latexresult').html("Compiling...");
+                json=AjaxCompile(ajaxpath,path, filename,$('#pdflatex').is(':checked'));                
                 if(json){
                     //alert(json.data.output);
                     $('#latexresult').html("");
@@ -409,11 +413,13 @@ function compileFile(filename,path){
                 $('#latexresult').html(frame).promise().done(function(){               
                     
                     $('#latexresultpdf').attr('src',pdfviewerpath);
-                //alert("Done");
+                    //alert("Done");
                 });
                 
-            }
-                
+            },
+            Close: function() {
+                $( this ).dialog( "close" );
+            }  
         }		
     })
     
@@ -430,7 +436,7 @@ function compileFile(filename,path){
     
     
     $(":button:contains('ViewPdf')").button('disable');
-//reopenEditor();
+    //reopenEditor();
 }
 
 //Tries to compile The file
