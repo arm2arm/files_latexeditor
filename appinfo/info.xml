@@ -2,7 +2,7 @@
 <info>
 	<id>files_latexeditor</id>
 	<name>LatexTex Editor and Compiler</name>
-	<description>Simple LaTex editor based on Ace editor.</description>
+	<description>Simple LaTex editor and compiler depend on files_texteditor.</description>
 	<licence>AGPL</licence>
 	<author>Arman Khalatyan</author>
 	<require>4.9</require>

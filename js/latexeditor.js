@@ -1,3 +1,5 @@
+//TODO remove files_texteditor dependence
+/*
 $(document).ready(function() {
         $('#latexeditor').bind('change', function() {
                 var checked = 1;
@@ -8,3 +10,4 @@ $(document).ready(function() {
         });
 });
 
+*/
