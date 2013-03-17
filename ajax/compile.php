@@ -31,7 +31,7 @@ $workdir = $userDirectory . $dir;
 
 $command = "mkdir -p  $outpath && cd $workdir && pdflatex -output-directory $outpath  $file";
 $output = "\n========BEGIN COMPILE==========\n$command\n";
-$output.=shell_exec($command);
+$output.=shell_exec(escapeshellarg($command));
 $output.="\n========END COMPILE==========\n";
 
 
