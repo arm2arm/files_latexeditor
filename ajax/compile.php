@@ -32,11 +32,11 @@ $uid = "latex_$userid" . "_" . $projectname;
 $outpath = "/tmp/$uid";
 $workdir = $userDirectory . $dir;
 
-<<<<<<< HEAD
+//HEAD
 $command = "mkdir -p  $outpath && cd $workdir && pdflatex -output-directory $outpath  $file";
 $output = "\n========BEGIN COMPILE==========\n$command\n";
 $output.=shell_exec(escapeshellarg($command));
-=======
+//=======
 if ($pdflatex === true)
     $command = "mkdir -p  $outpath && cd $workdir && pdflatex -output-directory $outpath  $file";
 else
@@ -44,7 +44,7 @@ else
 $output = "\n========BEGIN COMPILE==========$psfile\n$command\n";
 
 $output.=shell_exec($command);
->>>>>>> 3855bba2d28bf11d42b80e9c0e5e70a4f4e692ad
+//>>>>>>> 3855bba2d28bf11d42b80e9c0e5e70a4f4e692ad
 $output.="\n========END COMPILE==========\n";
 
 
