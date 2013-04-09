@@ -33,7 +33,7 @@ $outpath = "/tmp/$uid";
 $workdir = $userDirectory . $dir;
 
 //HEAD
-$command = "mkdir -p  $outpath && cd $workdir && pdflatex -output-directory $outpath  $file";
+$command = "mkdir -p  $outpath && cd $workdir && pdflatex -no-shell-escape -output-directory $outpath  $file";
 $output = "\n========BEGIN COMPILE==========\n$command\n";
 $output.=shell_exec(escapeshellarg($command));
 //=======
