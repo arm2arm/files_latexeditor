@@ -10,7 +10,7 @@ function my_shell_exec($cmd) {
     return shell_exec($cmd);
 }
 
-set_time_limit(0); //scanning can take ages
+set_time_limit(300); //scanning can take ages
 
 $dir = isset($_POST['path']) ? $_POST['path'] : '';
 $pdflatex = isset($_POST['pdflatex']) ? (bool) $_POST['pdflatex'] : false;
@@ -38,9 +38,9 @@ $output = "\n========BEGIN COMPILE==========\n$command\n";
 $output.=shell_exec(escapeshellarg($command));
 //=======
 if ($pdflatex === true)
-    $command = "mkdir -p  $outpath && cd $workdir && pdflatex -output-directory $outpath  $file";
+    $command = "mkdir -p  $outpath && cd $workdir && pdflatex -no-shell-escape -output-directory $outpath  $file";
 else
-    $command = "mkdir -p  $outpath && cd $workdir && latex -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
+    $command = "mkdir -p  $outpath && cd $workdir && latex -shell-escape -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
 $output = "\n========BEGIN COMPILE==========$psfile\n$command\n";
 
 $output.=shell_exec($command);
