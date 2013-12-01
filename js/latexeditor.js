@@ -110,7 +110,7 @@ function compileFile(filename,path){
             },
 	    ViewPdf: function(){
                 //console.log('width:'+$(this).width()*0.9+';height:'+$(this).height()*0.8);                
-                var pdfviewerpath="/?app=files_pdfviewer&getfile=viewer.php&dir="+json.data.path+"&file="+json.data.pdffile;
+                var pdfviewerpath="/index.php/apps/files_pdfviewer/viewer.php?dir="+json.data.path+"&file="+json.data.pdffile;
                 //var pdfviewerpath="http://www.google.com";
 
                 frame='<iframe id="latexresultpdf"  style="width:100%;height:100%;display:block;"></iframe>';
