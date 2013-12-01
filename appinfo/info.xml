@@ -2,7 +2,7 @@
 <info>
 	<id>files_latexeditor</id>
 	<name>LatexTex Editor and Compiler</name>
-	<description>Simple LaTex editor and compiler (please, disabled the standard 'Text Editor').</description>
+	<description>Simple LaTex editor and compiler (standard 'Text Editor' must be  enabled).</description>
 	<licence>AGPL</licence>
 	<author>Arman Khalatyan (OC5 compatibility by Dominique Caron)</author>
 	<require>5.0</require>
