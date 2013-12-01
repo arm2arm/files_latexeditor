@@ -35,9 +35,9 @@ $outpath = "/tmp/latex_" . $userid . "_" . $projectname;
 $mkdir_command = "mkdir -p  " . $outpath ;
 $cd_command = "cd " . str_replace(' ','\ ',trim($workdir)) ;
 if ($pdflatex === true)
-    $latex_command .= "pdflatex -output-directory $outpath $file";
+    $latex_command = "pdflatex -output-directory $outpath $file";
 else
-    $latex_command .= "latex -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
+    $latex_command = "latex -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
 $output = "========BEGIN COMPILE $psfile ======== \n "; // % $latex_command\n";
 
 $return = shell_exec($mkdir_command . " && " . $cd_command . " && " . $latex_command);
