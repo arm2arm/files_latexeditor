@@ -1,6 +1,6 @@
 <?php
 /**
- * ownCloud - files_texteditor
+ * ownCloud - files_latexeditor
  *
  * @author Tom Needham
  * @copyright 2013 Tom Needham tom@owncloud.com
@@ -24,19 +24,19 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::callCheck();
 
 // Get paramteres
-$filecontents = isset($_POST['filecontents']) ? $_POST['filecontents'] : false;
+$filecontents = $_POST['filecontents'];
 $path = isset($_POST['path']) ? $_POST['path'] : '';
 $mtime = isset($_POST['mtime']) ? $_POST['mtime'] : '';
 
-if($path != '' && $mtime != '' && $filecontents) {
+if($path != '' && $mtime != '') {
 	// Get file mtime
 	$filemtime = \OC\Files\Filesystem::filemtime($path);
 	if($mtime != $filemtime) {
 		// Then the file has changed since opening
-		OCP\JSON::error();
+		OCP\JSON::error(array('data' => array( 'message' => 'File: '.$path.' has been modified!')));
 		OCP\Util::writeLog(
-			'files_texteditor',
-			"File: ".$path." modified since opening.",
+			'files_latexeditor',
+			"File: ".$path." modified since opening. ".$mtime."!=".$filemtime,
 			OCP\Util::ERROR
 			);
 	} else {
@@ -53,7 +53,7 @@ if($path != '' && $mtime != '' && $filecontents) {
 			// Not writeable!
 			OCP\JSON::error(array('data' => array( 'message' => 'Insufficient permissions')));
 			OCP\Util::writeLog(
-				'files_texteditor',
+				'files_latexeditor',
 				"User does not have permission to write to file: ".$path,
 				OCP\Util::ERROR
 				);
@@ -61,11 +61,8 @@ if($path != '' && $mtime != '' && $filecontents) {
 	}
 } else if($path == '') {
 	OCP\JSON::error(array('data' => array( 'message' => 'File path not supplied')));
-	OCP\Util::writeLog('files_texteditor','No file path supplied', OCP\Util::ERROR);
+	OCP\Util::writeLog('files_latexeditor','No file path supplied', OCP\Util::ERROR);
 } else if($mtime == '') {
 	OCP\JSON::error(array('data' => array( 'message' => 'File mtime not supplied')));
-	OCP\Util::writeLog('files_texteditor','No file mtime supplied' ,OCP\Util::ERROR);
-} else if(!$filecontents) {
-	OCP\JSON::error(array('data' => array( 'message' => 'File contents not supplied')));
-	OCP\Util::writeLog('files_texteditor','The file contents was not supplied',OCP\Util::ERROR);
+	OCP\Util::writeLog('files_latexeditor','No file mtime supplied' ,OCP\Util::ERROR);
 }
