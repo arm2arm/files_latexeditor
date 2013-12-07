@@ -2,7 +2,7 @@ files_latexeditor
 =================
 
 File Latex Editor/compiler APP for OwnCloud 5.x and above
-You MUST disabled the standard "Text Editor" to allow this one.
+
 
 change log
 =================
