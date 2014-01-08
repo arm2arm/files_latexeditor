@@ -383,7 +383,7 @@ function AjaxCompile(ajaxpath, path,filename,pdflatex){
         data: {
             path:path,
             filename:filename,
-            pdflatex:pdflatex?1:0
+            compiler:pdflatex
         },
         dataType: 'json',
         global: false,
@@ -432,7 +432,7 @@ function compileFile(filename,path){
         open: function(e, ui) {
             $(e.target).parent().find('span').filter(function(){
                 return $(this).text() === 'dummy';
-            }).parent().replaceWith('<input id="pdflatex" value="pdflatex" name="pdflatex" type=\'checkbox\'>use pdflatex </input>');
+            }).parent().replaceWith('<select id="compiler" name="compiler"><option value="latex">LaTeX</option><option value="pdflatex">PDFLaTeX</option><option value="xelatex">XeLaTeX</option></select>');
         },
         buttons: {
             'dummy': function(e){
@@ -440,7 +440,7 @@ function compileFile(filename,path){
             Compile: function(){
 
                 $('#latexresult').html("Compiling...");
-                json=AjaxCompile(ajaxpath,path, filename,$('#pdflatex').is(':checked'));
+                json=AjaxCompile(ajaxpath,path, filename,$('#compiler').val());
                 if(json){
                     //alert(json.data.output);
                     $('#latexresult').html("");
