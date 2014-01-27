@@ -11,10 +11,9 @@ $(document).ready(function () {
 					var latexbutton = '<button id="editor_compile">'+t('files_latexeditor','LaTex')+'</button><div class="separator"></div>';
 					$('#editor_save').after(latexbutton);
 					$('#content').on('click', '#editor_compile', doCompile);
-            				files_latexeditor_js_done = true;
+					files_latexeditor_js_done = true;
 				} else
 					files_latexeditor_js_done = false;
-					
         		});
     		} else 
 			files_latexeditor_js_done = false;
@@ -22,7 +21,6 @@ $(document).ready(function () {
 });
 
 function isLatex(filename){
-    //return $('#isPublic').val() && (getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex');
     return getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex';
 }
 
@@ -34,7 +32,7 @@ function AjaxCompile(ajaxpath, path,filename,pdflatex){
         data: {
             path:path,
             filename:filename,
-            pdflatex:pdflatex?1:0
+            compiler:pdflatex
         },
         dataType: 'json',
         global: false,
@@ -75,7 +73,7 @@ function compileFile(filename,path){
         open: function(e, ui) {
             $(e.target).parent().find('span').filter(function(){
                 return $(this).text() === 'dummy';
-            }).parent().replaceWith('<input id="pdflatex" value="pdflatex" name="pdflatex" type=\'checkbox\'>use pdflatex </input>');
+            }).parent().replaceWith('<select id="compiler" name ="compiler" ><option value="latex">LaTeX</option><option value="pdflatex">PDFLaTeX</option><option value="xelatex">XeLaTeX</option></select>');
         },
         buttons: {
             'dummy': function(e){
@@ -84,7 +82,7 @@ function compileFile(filename,path){
 
     		is_compiled = true;
                 $('#latexresult').html("Compiling...");
-                json=AjaxCompile(ajaxpath,path, filename,$('#pdflatex').is(':checked'));
+                json=AjaxCompile(ajaxpath,path, filename,$('#compiler').val());
                 if(json){
                     //alert(json.data.output);
                     $('#latexresult').html("");
@@ -110,8 +108,7 @@ function compileFile(filename,path){
             },
 	    ViewPdf: function(){
                 //console.log('width:'+$(this).width()*0.9+';height:'+$(this).height()*0.8);                
-                var pdfviewerpath="/index.php/apps/files_pdfviewer/viewer.php?dir="+json.data.path+"&file="+json.data.pdffile;
-                //var pdfviewerpath="http://www.google.com";
+                var pdfviewerpath = oc_webroot + "/?app=files_pdfviewer&getfile=viewer.php&dir="+json.data.path+"&file="+json.data.pdffile;
 
                 frame='<iframe id="latexresultpdf"  style="width:100%;height:100%;display:block;"></iframe>';
                 $('#latexresult').html(frame).promise().done(function(){

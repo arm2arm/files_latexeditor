@@ -6,6 +6,9 @@ The standard "Text Editor" must be enabled.
 
 change log
 =================
+27.01.2014
+Merge the erasche feature (Adds support for selection of LaTeX compiler) and bug fixe for multiple directories latex project.
+Bug fixed when owncloud is not installed in the root of the webServer.
 01.12.2013
 Remove all the files_texteditor code.
 We detect now if the editor is open and then add (or not) the Compile button.
