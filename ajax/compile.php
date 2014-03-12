@@ -1,4 +1,36 @@
 <?php
+/*
+ * TODO
+ * All calls will be cleaned by this function.
+ */
+
+class Purify_Latex{
+    static $blacklisted=array("\write18", "\input{|");
+    private $_error_message;
+    static public function cleanFileName($f) {
+        return escapeshellarg($f);
+    }
+    /**
+     *This function should clean latex file based on blacklisted commands.
+     * @param string $f
+     * @return bool 
+     */
+    static public function cleanFileContent($f) {
+        $huge_str=file_get_contents($f);
+        $huge_str = str_replace(' ','',$huge_str);
+        $this->_error_message=array();
+        foreach (self::blacklisted as $key => $s) {
+            $pos = strpos($huge_str, $s);
+            if ($pos !== false) {
+                $this->_error_message[]="Error command: ".$s." is not allowed!!!!";
+                return false;
+                break;
+            }
+        }
+        
+        return true;
+    }
+}
 
 // Check if we are a user
 OCP\JSON::checkLoggedIn();
