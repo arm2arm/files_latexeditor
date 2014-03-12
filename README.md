@@ -1,11 +1,15 @@
 files_latexeditor
 =================
 
-File Latex Editor/compiler APP for OwnCloud 5.x and above
+File Latex Editor/compiler APP for OwnCloud 6.x 
 
 
 change log
 =================
+12.02.2014
+OC6 branch started.
+
+
 30.11.2013
 compatibility with OC5
 If a shared directory contains a tex file, friends can compile.
