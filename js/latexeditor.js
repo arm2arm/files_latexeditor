@@ -28,7 +28,7 @@ function showLatexCompiler(dir, filename) {
 							$('#fileList').on('changeDirectory.texteditor', textEditorOnChangeDirectory);
 						}
 						// Show the control bar
-						showControls(dir, filename, result.data.writeable);
+						showLatexControls(dir, filename, result.data.writeable);
 						// Update document title
 						$('body').attr('old_title', document.title);
 						document.title = filename + ' - ownCloud';

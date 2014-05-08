@@ -101,6 +101,14 @@ function AjaxCompile(ajaxpath, path,filename,pdflatex){
     return jqxhr;
 }
 
+function DestroIfExist(idname)
+{
+    if(document.getElementById(idname)) {
+        $("#"+idname).remove();
+    }
+}
+
+
 function compileFile(filename,path){
 
     //var message="Dir: "+path+" \nFilename: "+filename;
@@ -197,3 +205,23 @@ function doCompile(){
         compileFile(filename, dir);
     }
 }
+
+function showLatexControls(dir, filename, writeable) {
+        // Loads the control bar at the top.
+        OC.Breadcrumb.show(dir, filename, '#');
+        // Load the new toolbar.
+        var editorbarhtml = '<div id="editorcontrols" style="display: none;">';
+        if (writeable) {
+                editorbarhtml += '<button id="editor_save">' + t('files_texteditor', 'Save') + '</button>';
+		editorbarhtml += '<button id="editor_compile">'+'LaTeX'+'</button><div class="separator"></div>';
+        }
+        editorbarhtml += '<label for="editorseachval">' + t('files_texteditor', 'Search');
+        editorbarhtml += '</label><input type="text" name="editorsearchval" id="editorsearchval">';
+        editorbarhtml += '<button id="editor_close">';
+        editorbarhtml += t('files_texteditor', 'Close') + '</button></div>';
+
+        $('#controls').append(editorbarhtml);
+        $('#editorcontrols').show();
+	$('#content').on('click', '#editor_compile', doCompile);
+}
+

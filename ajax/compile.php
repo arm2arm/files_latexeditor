@@ -67,9 +67,9 @@ $outpath = "/tmp/latex_" . $userid . "_" . $projectname;
 $mkdir_command = "mkdir -p  " . $outpath ;
 $cd_command = "cd " . str_replace(' ','\ ',trim($workdir)) ;
 if ($pdflatex === true)
-    $latex_command .= "pdflatex -output-directory $outpath $file";
+    $latex_command .= "pdflatex -interaction=batchmode -output-directory $outpath $file";
 else
-    $latex_command .= "latex -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
+    $latex_command .= "latex -interaction=batchmode -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
 $output = "========BEGIN COMPILE $psfile ======== \n "; // % $latex_command\n";
 
 $return = shell_exec($mkdir_command . " && " . $cd_command . " && " . $latex_command);
@@ -91,8 +91,9 @@ if ( empty($errors) === false ) {
 	for ( $i = $line ; $i <= $line + 5 ; $i++)
 		$error .=  $log_array[$i]."\n";
     }
-    OCP\JSON::error(array('data' => array('message' => $l->t('Compile failed with errors').' - <br/>', 'output' => nl2br($output . " % " . $latex_command . "\n" . $error ))));
-    shell_exec($cleanup);
+    OCP\JSON::error(array('data' => array('message' => $l->t('Compile failed with errors').' - <br/>', 'output' => nl2br($output . " % " . $latex_command . "\n" . $error ."\n>>>> BEGIN LOG FILE<<<<\n". file_get_contents($outpath . '/' . $logfile)."\n>>> END LOG FILE <<<\n" ))));
+
+   shell_exec($cleanup);
     exit;
 }
 
