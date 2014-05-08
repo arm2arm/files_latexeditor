@@ -5,65 +5,10 @@
  */
 
 
-function setSyntaxMode(ext) {
-	// Loads the syntax mode files and tells the editor
-	var filetype = new Array();
-	// add file extensions like this: filetype["extension"] = "filetype":
-	filetype["h"] = "c_cpp";
-	filetype["c"] = "c_cpp";
-	filetype["clj"] = "clojure";
-	filetype["coffee"] = "coffee"; // coffescript can be compiled to javascript
-	filetype["coldfusion"] = "cfc";
-	filetype["cpp"] = "c_cpp";
-	filetype["cs"] = "csharp";
-	filetype["css"] = "css";
-	filetype["groovy"] = "groovy";
-	filetype["haxe"] = "hx";
-	filetype["htm"] = "html";
-	filetype["html"] = "html";
-	filetype["java"] = "java";
-	filetype["js"] = "javascript";
-	filetype["jsm"] = "javascript";
-	filetype["json"] = "json";
-	filetype["latex"] = "latex";
-	filetype["less"] = "less";
-	filetype["ly"] = "latex";
-	filetype["ily"] = "latex";
-	filetype["lua"] = "lua";
-	filetype["markdown"] = "markdown";
-	filetype["md"] = "markdown";
-	filetype["mdown"] = "markdown";
-	filetype["mdwn"] = "markdown";
-	filetype["mkd"] = "markdown";
-	filetype["ml"] = "ocaml";
-	filetype["mli"] = "ocaml";
-	filetype["pl"] = "perl";
-	filetype["php"] = "php";
-	filetype["powershell"] = "ps1";
-	filetype["py"] = "python";
-	filetype["rb"] = "ruby";
-	filetype["scad"] = "scad"; // seems to be something like 3d model files printed with e.g. reprap
-	filetype["scala"] = "scala";
-	filetype["scss"] = "scss"; // "sassy css"
-	filetype["sh"] = "sh";
-	filetype["sql"] = "sql";
-	filetype["svg"] = "svg";
-	filetype["textile"] = "textile"; // related to markdown
-	filetype["tex"] = "latex";
-        filetype["xml"] = "xml";
 
-	if (filetype[ext] != null) {
-		// Then it must be in the array, so load the custom syntax mode
-		// Set the syntax mode
-		OC.addScript('files_texteditor', 'vendor/ace/src-noconflict/mode-' + filetype[ext], function () {
-			var SyntaxMode = ace.require("ace/mode/" + filetype[ext]).Mode;
-			window.aceEditor.getSession().setMode(new SyntaxMode());
-		});
-	}
-}
 
 function isLatex(filename){
-    //return $('#isPublic').val() && (getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex');
+   
     return getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex';
 }
 

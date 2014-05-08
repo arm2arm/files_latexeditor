@@ -4,6 +4,9 @@
  * All calls will be cleaned by this function.
  */
 
+//in production run please set this to 0
+$debug=0;
+
 class Purify_Latex{
     static $blacklisted=array("\write18", "\input{|");
     private $_error_message;
@@ -70,16 +73,23 @@ if ($pdflatex === true)
     $latex_command .= "pdflatex -interaction=batchmode -output-directory $outpath $file";
 else
     $latex_command .= "latex -interaction=batchmode -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
-$output = "========BEGIN COMPILE $psfile ======== \n "; // % $latex_command\n";
+if($debug)
+$output = "========BEGIN COMPILE $projectname ======== \n "; // % $latex_command\n";
 
 $return = shell_exec($mkdir_command . " && " . $cd_command . " && " . $latex_command);
 $log = file_get_contents($outpath . '/' . $logfile);
 
-while (preg_match('/Rerun to get cross-references right/',$log) || preg_match('/No file '.$tocfile.'/',$log)){
+$reruncount=0;
+while (preg_match('/Rerun to get cross-references right/',$log) || preg_match('/No file '.$tocfile.'/',$log) || $reruncount>4){
 	$return = shell_exec($cd_command . " && " . $latex_command);
 	$log = file_get_contents($outpath . '/' . $logfile);	
+        $reruncount++;       
 }
-
+if($reruncount>4){
+    $looperror="\n!!!! Error: Something went wrong please write a Bug report to https://github.com/arm2arm/files_latexeditor \n info: Loop number > 4\n";
+    file_put_contents($outpath . '/' . $logfile, $looperror, FILE_APPEND);
+    
+}
 $cleanup = "rm -rf $outpath";
 
 // ! at begining of a line indicate an error!
@@ -105,8 +115,10 @@ if (!file_exists($outpath . '/' . $pdffile)) {
 };
 
 
+ if($debug){
 $output .= $return;
 $output .= "\n========END COMPILE==========\n";
+ }
 
 if(file_exists($workdir . '/' . $pdffile))
 	\OC\Files\Filesystem::unlink($workdir . '/' . $pdffile);
@@ -119,7 +131,9 @@ if (!@rename(trim($outpath . '/' . $pdffile), trim($workdir . '/'. $pdffile))) {
     $output.="\n>>>> " . "<br />\n" . $errors['message'];
     $output.="<strong>" . trim($outpath . '/' . $pdffile) . " to " . trim($workdir . '/' . $pdffile) . "</strong>";
 } else {
+   if($debug)
     $output.="<strong> Copy " . trim($outpath . '/' . $pdffile) . " to " . trim($workdir . '/' . $pdffile) . "</strong>";
+   
     if (!$pdflatex) {
         if (!@rename(trim($outpath . '/' . $psfile), trim($workdir . '/' . $psfile))) {
             $errors = error_get_last();
@@ -129,8 +143,11 @@ if (!@rename(trim($outpath . '/' . $pdffile), trim($workdir . '/'. $pdffile))) {
 	    $output.=" <strong> Copy " . trim($outpath . '/' . $psfile) . "</strong>";
     }
 }
-
+if($debug)
 $output.="\n>>>> " . $l->t("COPY DONE: ") . "\n";
+
+$output.="Success...\n" . $l->t("please review pdf file") . "\n";
+
 $target = OCP\Files::buildNotExistingFileName(stripslashes($workdir), $pdffile);
 $target = \OC\Files\Filesystem::normalizePath($target);
 $meta =  \OC\Files\Filesystem::getFileInfo($target);

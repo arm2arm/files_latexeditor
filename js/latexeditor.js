@@ -42,11 +42,8 @@ function showLatexCompiler(dir, filename) {
 						if ( ! result.data.writeable ) {
 							aceEditor.setReadOnly(true);
 						}
-						if (result.data.mime && result.data.mime === 'text/html') {
-							setSyntaxMode('html');
-						} else {
-							setSyntaxMode(getFileExtension(filename));
-						}
+						
+                                                setSyntaxMode('latex');
 						OC.addScript('files_texteditor', 'vendor/ace/src-noconflict/theme-clouds', function () {
 							window.aceEditor.setTheme("ace/theme/clouds");
 						});

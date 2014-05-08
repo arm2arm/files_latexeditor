@@ -2,6 +2,9 @@
 /**
  * ownCloud - files_latexeditor
  *
+ * Change log:
+ * A.Khalatyan 2013 - files_texteditor => files_latexeditor
+ * 
  * @author Tom Needham
  * @copyright 2013 Tom Needham tom@owncloud.com
  *
