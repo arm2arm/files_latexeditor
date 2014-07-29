@@ -65,16 +65,25 @@ if(!\OC\Files\Filesystem::isCreatable(stripslashes($dir))) {
     exit();
 }
 
-$outpath = "/tmp/latex_" . $userid . "_" . $projectname;
+//$outpath = "/tmp/latex_" . $userid . "_" . $projectname;
 
-$mkdir_command = "mkdir -p  " . $outpath ;
+
+
+$outpath = $workdir;
+# OCP\JSON::error(array('data' => array('message' => $outpath, 'output' => '')));
+#    exit();
+
+
+#$mkdir_command = "mkdir -p  " . $outpath ;
+$mkdir_command = " echo 0" ;
+
 $cd_command = "cd " . str_replace(' ','\ ',trim($workdir)) ;
 if ($pdflatex === true)
     $latex_command .= "pdflatex -interaction=batchmode -output-directory $outpath $file";
 else
     $latex_command .= "latex -interaction=batchmode -output-directory=$outpath  $file ; cd $outpath; dvips  $dvifile ; ps2pdf $psfile";
 if($debug)
-$output = "========BEGIN COMPILE $projectname ======== \n "; // % $latex_command\n";
+$output = "========BEGIN COMPILE $projectname ======== \n % $latex_command\n";
 
 $return = shell_exec($mkdir_command . " && " . $cd_command . " && " . $latex_command);
 $log = file_get_contents($outpath . '/' . $logfile);
@@ -90,7 +99,12 @@ if($reruncount>4){
     file_put_contents($outpath . '/' . $logfile, $looperror, FILE_APPEND);
     
 }
-$cleanup = "rm -rf $outpath";
+
+
+#OCP\JSON::error(array('data' => array('message' => $mkdir_command . " && " . $cd_command . " && " . $latex_command, 'output' => '')));
+#    exit();
+$cleanup = "echo 0";
+#rm -rf $outpath";
 
 // ! at begining of a line indicate an error!
 $errors = preg_grep("/^!/",explode("\n",$log)) ;
@@ -140,13 +154,14 @@ if (!@rename(trim($outpath . '/' . $pdffile), trim($workdir . '/'. $pdffile))) {
             $output.="\n>>>> " . $l->t("COPY ERROR: ") . $errors['type'];
             $output.="\n>>>> " . "<br />\n" . $errors['message'];
         } else
-	    $output.=" <strong> Copy " . trim($outpath . '/' . $psfile) . "</strong>";
+	    if($debug)
+	    $output.=" <strong> Copy " . trim($outpath . '/' . $psfile) . "</strong>\n";
     }
 }
 if($debug)
 $output.="\n>>>> " . $l->t("COPY DONE: ") . "\n";
 
-$output.="Success...\n" . $l->t("please review pdf file") . "\n";
+$output.="Success...\n" . $l->t("please click to <strong>ViewPdf</strong> button to review the pdf file") . "\n";
 
 $target = OCP\Files::buildNotExistingFileName(stripslashes($workdir), $pdffile);
 $target = \OC\Files\Filesystem::normalizePath($target);
@@ -158,4 +173,5 @@ if (!$pdflatex) {
 } 
 
 OCP\JSON::success(array('data' => array('output' => nl2br($output), 'path' => $dir, 'pdffile' => $pdffile, 'psfile' => $psfile, 'logfile' => $logfile)));
-shell_exec($cleanup);
+
+//shell_exec($cleanup);
