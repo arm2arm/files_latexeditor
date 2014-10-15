@@ -1,7 +1,5 @@
 
 $(document).ready(function () {
-	//$("a#owncloud img").attr('src','/themes/coulomb/core/img/L2cCloud.png');
-	//$("a#owncloud img").attr('style','max-height:32px');
 	var files_latexeditor_js_done = false;
 	$('#content #controls').bind('DOMNodeInserted', function(event) {
 		if( $("#content #editor").length ) { // Editor exists
@@ -23,7 +21,6 @@ $(document).ready(function () {
 });
 
 function isLatex(filename){
-    //return $('#isPublic').val() && (getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex');
     return getFileExtension(filename)=='tex'||getFileExtension(filename)=='latex';
 }
 
@@ -35,7 +32,6 @@ function AjaxCompile(ajaxpath, path,filename,pdflatex){
         data: {
             path:path,
             filename:filename,
-            /* pdflatex:pdflatex?1:0 */
             compiler:pdflatex
         },
         dataType: 'json',
@@ -63,9 +59,6 @@ function AjaxCompile(ajaxpath, path,filename,pdflatex){
 }
 
 function compileFile(filename,path){
-
-    //var message="Dir: "+path+" \nFilename: "+filename;
-
     var is_compiled = false;
     var ajaxpath=OC.filePath('files_latexeditor','ajax','compile.php');
     var pdffile="";
@@ -86,14 +79,11 @@ function compileFile(filename,path){
 
     		is_compiled = true;
                 $('#latexresult').html("Compiling...");
-                //json=AjaxCompile(ajaxpath,path, filename,$('#pdflatex').is(':checked'));
                 json=AjaxCompile(ajaxpath,path, filename,$('#compiler').val());
                 if(json){
-                    //alert(json.data.output);
                     $('#latexresult').html("");
                     if(json.data.message){
                         $('#latexresult').html(json.data.message);
-                        // $('#latexresult').addClass('ui-state-error');
                         $('#latexresult').css({
                             color:"red"
                         });
@@ -112,17 +102,12 @@ function compileFile(filename,path){
 
             },
 	    ViewPdf: function(){
-                //console.log('width:'+$(this).width()*0.9+';height:'+$(this).height()*0.8);                
-                //var pdfviewerpath = oc_webroot + "/?app=files_pdfviewer&getfile=viewer.php&dir="+json.data.path+"&file="+json.data.pdffile;
-		var pdfviewerpath = OC.linkTo('files_pdfviewer', 'viewer.php')+'?dir='+encodeURIComponent(json.data.path).replace(/%2F/g, '/')+'&file='+encodeURIComponent(json.data.pdffile);
-                //var pdfviewerpath="http://www.google.com";
-                //alert('PDF URL = '+pdfviewerpath);
-
+                var pdfviewerpath = OC.linkTo('files_pdfviewer', 'viewer.php')+'?dir='+encodeURIComponent(json.data.path).replace(/%2F/g, '/')+'&file='+encodeURIComponent(json.data.pdffile);
+                
                 frame='<iframe id="latexresultpdf"  style="width:100%;height:100%;display:block;"></iframe>';
                 $('#latexresult').html(frame).promise().done(function(){
 
                     $('#latexresultpdf').attr('src',pdfviewerpath);
-                    //alert("Done");
                 });
 
             },
@@ -135,8 +120,6 @@ function compileFile(filename,path){
     })
 
 
-    //console.log($('#editor').position());
-    //console.log($('#editor').offset());
     x=$('#editor').position().left+$('#editor').width()*0.45;
     y=$('#editor').position().top+10;
     compileDlg.dialog({
