@@ -1,11 +1,14 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <info>
-	<id>files_latexeditor</id>
-	<name>LatexTex Editor and Compiler</name>
-	<description>Simple LaTex editor and compiler (depend on  'Text Editor').</description>
-	<licence>AGPL</licence>
-	<author>Arman Khalatyan </author>
-	<require>6.0</require>
-	<shipped>false</shipped>
-	<default_enable/>
+    <id>files_latexeditor</id>
+    <name>Files LatexEditor</name>
+    <description>Files LaTex compiler and editor</description>
+    <licence>AGPL</licence>
+    <author>Arman Khalatyan</author>
+    <version>0.8.0</version>
+    <namespace>FilesLatexeditor</namespace>
+    <category>productivity</category>
+    <dependencies>
+        <owncloud min-version="8" />
+    </dependencies>
 </info>
